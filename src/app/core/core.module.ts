@@ -9,7 +9,8 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { LoaderComponent } from './components/loader/loader.component';
 import { ToastrComponent } from './components/toastr/toastr.component';
 import { AlertModule } from 'ngx-bootstrap/alert';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 
 
@@ -37,6 +38,13 @@ import { HttpClientModule } from '@angular/common/http';
     PageNotFoundComponent,
     LoaderComponent,
     ToastrComponent
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+     }
   ]
 })
 export class CoreModule {

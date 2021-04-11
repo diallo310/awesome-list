@@ -1,33 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { of } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { of, Subscription } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { WorkdaysService } from 'src/app/core/services/workdays.service';
+import { Workday } from 'src/app/shared/models/workday';
 
 
 @Component({
   selector: 'al-planning-workday-list',
   templateUrl: './planning-workday-list.component.html'
 })
-export class PlanningWorkdayListComponent implements OnInit {
+export class PlanningWorkdayListComponent implements OnInit, OnDestroy {
 
-  public workdays$;
-  public workdays;
+  workdays: Workday[];
+  subscription: Subscription;
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private workdayService: WorkdaysService) { }
 
   ngOnInit() {
-    this.workdays = [
-      { dueDate: 'Lundi', doneTasks: 1, remainingTasks: 3 },
-      { dueDate: 'Mardi', doneTasks: 0, remainingTasks: 2 },
-      { dueDate: 'Mercredi', doneTasks: 0, remainingTasks: 1 }
-    ];
-    this.workdays$ = of(this.workdays).pipe(delay(1000));
+    const id: string = this.authService.currentUser.id;
+    this.subscription = this.workdayService.getWorkdayByUser(id).subscribe(workdays => this.workdays = workdays);
   }
 
-  onWorkdayRemoved(dueDate) {
-    this.workdays = this.workdays.filter(workday =>
-      !dueDate.includes(workday.dueDate)
-    );
-    this.workdays$ = of(this.workdays);
+  onWorkdayRemoved(workday: Workday) {
+    this.workdayService.remove(workday)
+      .subscribe(_ => {
+        this.workdays =
+          this.workdays.filter(el => el.id !== workday.id);
+      });
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 
 }

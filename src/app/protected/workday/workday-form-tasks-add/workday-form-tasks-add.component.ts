@@ -13,8 +13,8 @@ export class WorkdayFormTasksAddComponent implements OnInit {
   ngOnInit() {
   }
 
-  addTask(){
-    this.addedTask.emit()
+  addTask() {
+    this.addedTask.emit();
   }
 
 }

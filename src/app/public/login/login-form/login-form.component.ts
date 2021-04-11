@@ -45,7 +45,6 @@ export class LoginFormComponent implements OnInit {
       .subscribe(
         _ => this.router.navigate(['/app/dashboard']),
         _ => this.loginForm.reset()
-
-      )
+      );
   }
 }

@@ -10,7 +10,7 @@ import { ToastrService } from '../../services/toastr.service';
 })
 export class ToastrComponent implements OnInit {
 
-  private toastr$: Observable<Toastr | null>;
+  toastr$: Observable<Toastr | null>;
 
   constructor(private toastrService: ToastrService) { }
 
@@ -18,7 +18,7 @@ export class ToastrComponent implements OnInit {
     this.toastr$ = this.toastrService.toastr$;
   }
 
-  closeToastr(){
+  closeToastr() {
     this.toastrService.closeToastr();
   }
 

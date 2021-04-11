@@ -8,10 +8,8 @@ import { switchMap, tap, catchError, finalize, delay } from 'rxjs/operators';
 import { ErrorService } from 'src/app/core/services/error.service';
 import { LoaderService } from './loader.service';
 import { Router } from '@angular/router';
+import { ToastrService } from './toastr.service';
 
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +24,8 @@ export class AuthService {
     private router: Router,
     private usersService: UsersService,
     private errorService: ErrorService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private toastrService: ToastrService
   ) { }
 
   login(email: string, password: string): Observable<User | null> {
@@ -34,19 +33,19 @@ export class AuthService {
     const url = `${environment.firebase.auth.baseURL}/verifyPassword?key= ${environment.firebase.apiKey}`;
 
     const data = {
-      email: email,
-      password: password,
+      email: `${email}`,
+      password: `${password}`,
       returnSecureToken: true
-    }
+    };
 
     this.loaderService.setLoading(true);
 
-    return this.http.post<User>(url, data, httpOptions).pipe(
+    return this.http.post<User>(url, data, {}).pipe(
       switchMap((data: any) => {
         const userId: string = data.localId;
         const jwt: string = data.idToken;
         this.saveAuthData(userId, jwt);
-        return this.usersService.get(userId, jwt);
+        return this.usersService.get(userId);
       }),
       tap(user => this.user.next(user)),
       tap(_ => this.logoutTimer(3600)),
@@ -62,30 +61,28 @@ export class AuthService {
     ${environment.firebase.apiKey}`;
 
     const data = {
-      email: email,
-      password: password,
-      name: name,
+      email: `${email}`,
+      password: `${password}`,
+      name: `${name}`,
       returnSecureToken: true
     };
     this.loaderService.setLoading(true);
 
-    return this.http.post<User>(url, data, httpOptions).pipe(
+    return this.http.post<User>(url, data, {}).pipe(
       switchMap((data: any) => {
         const jwt: string = data.idToken;
         const user = new User({
           email: data.email,
           id: data.localId,
           name: name
-        })
+        });
         this.saveAuthData(user.id, jwt);
-        return this.usersService.save(user, jwt);
+        return this.usersService.save(user);
       }),
       tap(user => this.user.next(user)),
       tap(_ => this.logoutTimer(3600)),
       catchError(error => this.errorService.handleError(error)),
       finalize(() => this.loaderService.setLoading(false))
-
-
     );
 
   }
@@ -98,7 +95,7 @@ export class AuthService {
 
   private saveAuthData(userId: string, token: string) {
     const now = new Date();
-    const expirationDate = (now.getTime() + 3600 * 1000).toString();
+    const expirationDate = (now.getTime() + 60 * 60 * 1000).toString();
     localStorage.setItem('expirationDate', expirationDate);
     localStorage.setItem('token', token);
     localStorage.setItem('userId', userId);
@@ -109,6 +106,24 @@ export class AuthService {
     this.router.navigate(['app/dashboard']);
   }
 
+  public updateUserState(user: User): Observable<User | null> {
+    this.loaderService.setLoading(true);
+
+    return this.usersService.update(user).pipe(
+      tap(user => this.user.next(user)),
+      tap(_ => this.toastrService.showToastr({
+        category: 'success',
+        message: 'Vos informations ont été mises à jour !'
+      })),
+      catchError(error => this.errorService.handleError(error)),
+      finalize(() => this.loaderService.setLoading(false))
+    );
+  }
+
+
+  get currentUser(): User {
+    return this.user.getValue();
+  }
 
   logout(): void {
     localStorage.removeItem('expirationDate');

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LayoutService } from '../../services/layout.service';
 import { AuthService } from '../../services/auth.service';
@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   public homePath = 'home';
   public loginPath = 'login';
   public registerPath = 'register';
@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.subscription = this.authService.user$.subscribe(user=>{
+    this.subscription = this.authService.user$.subscribe(user => {
       this.user = user;
     });
   }
@@ -44,11 +44,11 @@ export class NavbarComponent implements OnInit {
 
   public logout() {
     this.authService.logout();
-   }
+  }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-   }
+  }
 
 
 }

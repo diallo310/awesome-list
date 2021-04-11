@@ -4,6 +4,7 @@ export class Workday {
     readonly id: string; // identifiant de la journée de travail
     dueDate: number; // date à laquelle est prévue la journée de travail
     notes?: string; // facultatif : notes éventuelles prises par l’utilisateur
+    displayDate: string;
     tasks: Task[]; // la liste des tâches à faire
     userId: string; // identifiant de l’utilisateur
 
@@ -11,12 +12,14 @@ export class Workday {
         id?: string,
         dueDate?: number,
         notes?: string,
+        displayDate?: string;
         tasks?: Task[],
         userId: string
     }) {
         this.id = options.id || null;
         this.dueDate = options.dueDate || 0;
         this.notes = options.notes || '';
+        this.displayDate = options.displayDate || '';
         this.tasks = options.tasks || [new Task()];
         this.userId = options.userId;
     }

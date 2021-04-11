@@ -8,21 +8,21 @@ import { take } from 'rxjs/operators';
 })
 export class ToastrService {
   private toastr: BehaviorSubject<Toastr | null> = new BehaviorSubject(null);
-  public readonly toastr$: Observable<Toastr | null>= this.toastr.asObservable();
+  public readonly toastr$: Observable<Toastr | null> = this.toastr.asObservable();
 
   constructor() { }
 
-  public showToastr(toastr: Toastr): void{
-    timer(0, 3000).pipe(take(2)).subscribe(i=>{
-      if(i===0){
+  public showToastr(toastr: Toastr): void {
+    timer(0, 3000).pipe(take(2)).subscribe(i => {
+      if (i === 0) {
         this.toastr.next(toastr);
-      }else{
+      } else {
         this.toastr.next(null);
       }
-    })
+    });
   }
 
-  closeToastr(){
+  closeToastr() {
     this.toastr.next(null);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LayoutService } from '../core/services/layout.service';
 
@@ -7,7 +7,7 @@ import { LayoutService } from '../core/services/layout.service';
   templateUrl: './protected.component.html',
   styleUrls: ['./protected.component.scss']
 })
-export class ProtectedComponent implements OnInit {
+export class ProtectedComponent implements OnInit, OnDestroy {
 
   public isSidenavCollapsed: boolean;
   private subscription: Subscription;
@@ -17,7 +17,7 @@ export class ProtectedComponent implements OnInit {
   ngOnInit() {
     this.subscription = this.layoutService.isSidenavCollapsed$.subscribe(
       isSidenavCollapsed => this.isSidenavCollapsed = isSidenavCollapsed
-    )
+    );
   }
 
   ngOnDestroy() {

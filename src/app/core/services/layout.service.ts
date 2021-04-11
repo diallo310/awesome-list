@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,8 @@ export class LayoutService {
 
   constructor() { }
 
-  toggleSidenav(){
+  toggleSidenav() {
     this.isSidenavCollapsed.next(!this.isSidenavCollapsed.getValue());
   }
+
 }

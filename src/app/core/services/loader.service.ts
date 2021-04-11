@@ -12,6 +12,6 @@ export class LoaderService {
   constructor() { }
 
   public setLoading(isLoading: boolean): void {
-    this.isLoading.next(isLoading)
+    this.isLoading.next(isLoading);
   }
 }

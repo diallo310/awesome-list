@@ -7,7 +7,7 @@ import { throwError } from 'rxjs';
 })
 export class ErrorService {
 
-  constructor(private toastrService: ToastrService ) { }
+  constructor(private toastrService: ToastrService) { }
 
   public handleError(error) {
     this.toastrService.showToastr({

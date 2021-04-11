@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UsersService } from './core/services/users.service';
 import { AuthService } from './core/services/auth.service';
 
@@ -7,10 +7,14 @@ import { AuthService } from './core/services/auth.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   constructor(
     private usersService: UsersService,
     private authService: AuthService) { }
+
+  ngOnInit() {
+    this.tryAutoLogin();
+  }
 
   private tryAutoLogin() {
     const token = localStorage.getItem('token');
@@ -21,7 +25,7 @@ export class AppComponent {
     if (now >= expirationDate) { return; }
 
     const userId = localStorage.getItem('userId');
-    this.usersService.get(userId, token).subscribe(user => {
+    this.usersService.get(userId).subscribe(user => {
       this.authService.autoLogin(user);
     });
   }

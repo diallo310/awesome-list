@@ -31,7 +31,10 @@
               "src/styles.scss",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -125,6 +128,9 @@
           }
         }
       }
-    }},
+
+    }
+    
+  },
   "defaultProject": "awesome-list"
 }
